@@ -20,4 +20,4 @@ requires:
   Moose: 0.33
   Parse::RecDescent: 0
   Text::Balanced: 0
-version: 0.02
+version: 0.03

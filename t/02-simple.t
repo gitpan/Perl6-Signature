@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 43;
+use Test::More tests => 47;
 use Test::Exception;
 
 use Perl6::Signature;
@@ -43,6 +43,7 @@ use Perl6::Signature;
         , ':(:x($y) = 42)',       'longnamed with default'
         , ':(:x(@y) = (1, 2))',   'longnamed array with default'
         , ':(:x(%y) = (1 => 2))', 'longnamed hash with default'
+        , ':(Int|Str $x)',        'type constraint alternative'
         );
     while (my ($sig, $desc) = splice @sigs, 0, 2) {
         lives_and { is(Perl6::Signature->parse($sig)->to_string, $sig) } "$desc - $sig";
@@ -63,6 +64,7 @@ use Perl6::Signature;
         , ':(*@x, $y)',           ':($y, *@x)',           'slurpy array and positional'
         , ':(*%x, $y)',           ':($y, *%x)',           'slurpy hash and positional'
         , ':(*%x, $y, *@x)',      ':($y, *@x, *%x)',      'slurpy hash and positional'
+        , ':(Int | Str $x)',      ':(Int|Str $x)',        'type constraint alternative with whitespce'
         );
     while (my ($sig, $canonical, $desc) = splice @sigs, 0, 3) {
         lives_and { is(Perl6::Signature->parse($sig)->to_string, $canonical) } "(altspace) $desc";
@@ -71,6 +73,8 @@ use Perl6::Signature;
     my @badsigs =
         ( ':($x?:)',              'optional invocant'
         , ':($x?, $y)',           'required positional after optional one'
+        , ':(Int| $x)',           'invalid type alternation',
+        , ':(|Int $x)',           'invalid type alternation',
         );
     while (my ($badsig, $desc) = splice @badsigs, 0, 2) {
         dies_ok { Perl6::Signature->parse($badsig) } "(badsig) $desc";

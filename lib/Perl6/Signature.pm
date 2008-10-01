@@ -6,7 +6,7 @@ use Parse::RecDescent;
 use Text::Balanced;
 use Perl6::Signature::Val;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 #$::RD_TRACE = 1;
 $::RD_HINT  = 1;
@@ -74,7 +74,7 @@ our $SIGNATURE_GRAMMAR = << '#\'END';
 
     Invocant: Param
 
-    Param: ParamType(s?)
+    Param: ParamType(s? /\|/)
            SlurpynessModifier(?)
            ParamIdentifier <skip:''>
            OptionalityModifier(?)
@@ -234,6 +234,9 @@ sub parse {
     my($self, $sig_str) = @_;
 
     my $res = $parser->Sig($sig_str);
+
+    die "Unparsable signature"
+        unless $res;
 
     return $res;
 }
@@ -398,6 +401,11 @@ or named. This must be supplied by the Sig container.
 
 Gaal Yahas, C<< <gaal at forum2.org> >>
 
+Contributions by:
+
+Yuval Kogman, CC< <nothingmuch@woobling.org> >>
+
+Florian Ragwitz, CC< <rafl@debian.org> >>
 
 =head1 BUGS
 
